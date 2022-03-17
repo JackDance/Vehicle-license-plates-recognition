@@ -124,7 +124,6 @@ def main(args):
     # predict from video file or camera video stream
     if args.video_file is not None or args.camera_id != -1:
         # 这里执行视频或者摄像头预测输入
-        # TODO
         if args.camera_id != -1:
             capture = cv2.VideoCapture(args.camera_id)
         else:
@@ -147,9 +146,6 @@ def main(args):
             index += 1
             print('detect frame: %d' % index)
 
-            # frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            frame2 = frame
-
             text_sys = TextSystem(args)
             is_visualize = True
             font_path = args.vis_font_path
@@ -166,15 +162,12 @@ def main(args):
             _st = time.time()
             count = 0
 
-            # img, flag = check_and_read_gif(frame2)
-            # if not flag:
-            #     img = cv2.imread(frame2)
-            if frame2 is None:
-                logger.debug("error in loading image:{}".format(frame2))
+            if frame is None:
+                logger.debug("error in loading image:{}".format(frame))
                 continue
             starttime = time.time()
             # rec_res is the last recognition results.
-            dt_boxes, rec_res = text_sys(frame2)
+            dt_boxes, rec_res = text_sys(frame)
             elapse = time.time() - starttime
             total_time += elapse
 
@@ -184,7 +177,7 @@ def main(args):
                 logger.debug("{}, {:.3f}".format(text, score))
 
             if is_visualize:
-                image = Image.fromarray(cv2.cvtColor(frame2, cv2.COLOR_BGR2RGB))
+                image = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
                 boxes = dt_boxes
                 txts = [rec_res[i][0] for i in range(len(rec_res))]
                 scores = [rec_res[i][1] for i in range(len(rec_res))]
@@ -209,6 +202,8 @@ def main(args):
                     os.path.join(draw_img_save_dir, frame2_name)))
 
                 # 开启界面展示，一帧帧显示推理后的图片
+                cv2.namedWindow("Detected Images:", 0)
+                cv2.resizeWindow("Detected Images:", 640, 480)
                 cv2.imshow("Detected Images:", draw_img[:, :, ::-1])
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break

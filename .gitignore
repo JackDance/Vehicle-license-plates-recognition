@@ -13,7 +13,6 @@ output/
 pretrain_models/
 train_data/
 
-*/.DS_Store
 *.DS_Store
 *.vs
 *.user
