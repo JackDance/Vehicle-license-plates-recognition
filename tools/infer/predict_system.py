@@ -135,7 +135,7 @@ def main(args):
         height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
         fps = int(capture.get(cv2.CAP_PROP_FPS))
         frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT))
-        print("fps: %d, frame_count: %d" % (fps, frame_count))
+        logger.debug("fps: %d, frame_count: %d" % (fps, frame_count))
 
         index = 0
         while (1):
@@ -144,7 +144,7 @@ def main(args):
             if not ret:
                 break
             index += 1
-            print('detect frame: %d' % index)
+            logger.debug('detect frame: %d' % index)
 
             text_sys = TextSystem(args)
             is_visualize = True
@@ -192,7 +192,6 @@ def main(args):
                 draw_img_save_dir = args.draw_img_save_dir
                 os.makedirs(draw_img_save_dir, exist_ok=True)
 
-                # image_file = frame2 + "png"
                 frame2_name = str(index) + '.png'
 
                 cv2.imwrite(
