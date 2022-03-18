@@ -41,7 +41,7 @@ def init_args():
 
     # params for text detector
     parser.add_argument("--image_dir", type=str)
-    # Jack add 2 arguments
+    # add 2 arguments
     parser.add_argument(
         "--video_file",
         type=str,
@@ -111,6 +111,7 @@ def init_args():
     parser.add_argument("--e2e_pgnet_mode", type=str, default='fast')
 
 
+    parser.add_argument("--warmup", type=str2bool, default=False)
     #
     parser.add_argument(
         "--draw_img_save_dir", type=str, default="./inference_results")
