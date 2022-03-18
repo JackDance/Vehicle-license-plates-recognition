@@ -110,18 +110,6 @@ def init_args():
     parser.add_argument("--e2e_pgnet_valid_set", type=str, default='totaltext')
     parser.add_argument("--e2e_pgnet_mode", type=str, default='fast')
 
-    # params for text classifier
-    parser.add_argument("--use_angle_cls", type=str2bool, default=False)
-    parser.add_argument("--cls_model_dir", type=str)
-    parser.add_argument("--cls_image_shape", type=str, default="3, 48, 192")
-    parser.add_argument("--label_list", type=list, default=['0', '180'])
-    parser.add_argument("--cls_batch_num", type=int, default=6)
-    parser.add_argument("--cls_thresh", type=float, default=0.9)
-
-    parser.add_argument("--enable_mkldnn", type=str2bool, default=False)
-    parser.add_argument("--cpu_threads", type=int, default=10)
-    parser.add_argument("--use_pdserving", type=str2bool, default=False)
-    parser.add_argument("--warmup", type=str2bool, default=False)
 
     #
     parser.add_argument(
