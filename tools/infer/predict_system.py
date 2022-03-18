@@ -61,6 +61,7 @@ class TextSystem(object):
 
     def __call__(self, img, cls=True):
         ori_im = img.copy()
+        # start text detect
         dt_boxes, elapse = self.text_detector(img)
 
         logger.debug("dt_boxes num : {}, elapse : {}".format(
@@ -75,11 +76,7 @@ class TextSystem(object):
             tmp_box = copy.deepcopy(dt_boxes[bno])
             img_crop = get_rotate_crop_image(ori_im, tmp_box)
             img_crop_list.append(img_crop)
-        if self.use_angle_cls and cls:
-            img_crop_list, angle_list, elapse = self.text_classifier(
-                img_crop_list)
-            logger.debug("cls num  : {}, elapse : {}".format(
-                len(img_crop_list), elapse))
+        # start text recognize
         rec_res, elapse = self.text_recognizer(img_crop_list)
         logger.debug("rec_res num  : {}, elapse : {}".format(
             len(rec_res), elapse))
