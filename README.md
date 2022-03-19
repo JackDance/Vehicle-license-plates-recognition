@@ -1,19 +1,14 @@
-## Introduction
-This repo is the implementation of vehicle license plate recognition powered by [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR).
-
-This repo support three input formats: img, video and camera.
-
+## 介绍
 该仓库是由PaddleOCR驱动的车牌识别实现。
 
 该仓库支持三种形式的输入：图像，视频和摄像头。
-## Function
+## 功能
+根据训练的数据集，目前只能识别蓝牌。如果需要识别更多种类的拍照，需要加入相关的数据进行训练。
 
-Recognition of China's blue license plates. If you want to recognize more kinds of license plates, please prepare the data on the types of license plates mentioned and then for training.
+## 使用方法
+更多细节的使用，烦请查阅博主的(《使用Paddle实现高精度车牌识别》)[https://zhuanlan.zhihu.com/p/479547189]
 
-## Usage
-For the detailed tutorial on the use of this repo, please visit the [Zhihu article]().
-
-## Display of recognition results
+## 识别结果的部分展示
 ![](https://pic2.zhimg.com/80/v2-e654e69df5254608ea91d8f4b2970c72_1440w.png)
 
-Please give a star if it helped you, thanks a lot.
+如果该仓库有帮助到你，欢迎给个star，谢谢。有任何疑问都可以提issue～
