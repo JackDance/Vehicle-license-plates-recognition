@@ -94,7 +94,7 @@ def init_args():
         default="./ppocr/utils/ppocr_keys_v1.txt")
     parser.add_argument("--use_space_char", type=str2bool, default=True)
     parser.add_argument(
-        "--vis_font_path", type=str, default="./doc/fonts/simfang.ttf")
+        "--vis_font_path", type=str, default="./simfang.ttf")
     parser.add_argument("--drop_score", type=float, default=0.5)
 
     # params for e2e
@@ -407,22 +407,28 @@ def draw_ocr(image,
         return img
     return image
 
-
+# 新建右侧画布来展示预测的ocr结果
 def draw_ocr_box_txt(image,
                      boxes,
                      txts,
                      scores=None,
                      drop_score=0.5,
-                     font_path="./doc/simfang.ttf"):
+                     font_path="./simfang.ttf"):
+    # 获取图像宽高
     h, w = image.height, image.width
+    # 新建左右画布
     img_left = image.copy()
     img_right = Image.new('RGB', (w, h), (255, 255, 255))
 
     import random
 
+    # 设置随机数种子
     random.seed(0)
+
+    # 设置绘图函数
     draw_left = ImageDraw.Draw(img_left)
     draw_right = ImageDraw.Draw(img_right)
+    # 遍历预测框和结果文本
     for idx, (box, txt) in enumerate(zip(boxes, txts)):
         if scores is not None and scores[idx] < drop_score:
             continue
@@ -435,10 +441,12 @@ def draw_ocr_box_txt(image,
                 box[2][1], box[3][0], box[3][1]
             ],
             outline=color)
+        # 计算预测框的height和width
         box_height = math.sqrt((box[0][0] - box[3][0])**2 + (box[0][1] - box[3][
             1])**2)
         box_width = math.sqrt((box[0][0] - box[1][0])**2 + (box[0][1] - box[1][
             1])**2)
+        # 根据预测框的height和weight绘制文本
         if box_height > 2 * box_width:
             font_size = max(int(box_width * 0.9), 10)
             font = ImageFont.truetype(font_path, font_size, encoding="utf-8")
@@ -453,12 +461,75 @@ def draw_ocr_box_txt(image,
             font = ImageFont.truetype(font_path, font_size, encoding="utf-8")
             draw_right.text(
                 [box[0][0], box[0][1]], txt, fill=(0, 0, 0), font=font)
+    # 一些后处理
     img_left = Image.blend(image, img_left, 0.5)
     img_show = Image.new('RGB', (w * 2, h), (255, 255, 255))
     img_show.paste(img_left, (0, 0, w, h))
     img_show.paste(img_right, (w, 0, w * 2, h))
+    # 返回绘图后的图像
     return np.array(img_show)
 
+# 在原图上展示预测的ocr结果
+def draw_box_txt(image,
+                     boxes,
+                     txts,
+                     scores=None,
+                     drop_score=0.5,
+                     font_path="./simfang.ttf"):
+    # 获取图像宽高
+    h, w = image.height, image.width
+
+    img_left = image.copy()
+
+    import random
+
+    # 设置随机数种子
+    random.seed(0)
+
+    # 设置绘图函数
+    draw_left = ImageDraw.Draw(img_left)
+
+    # 遍历预测框和结果文本
+    for idx, (box, txt) in enumerate(zip(boxes, txts)):
+        if scores is not None and scores[idx] < drop_score:
+            continue
+        color = (random.randint(0, 255), random.randint(0, 255),
+                 random.randint(0, 255))
+        draw_left.polygon(box, fill=color)
+        draw_left.polygon(
+            [
+                box[0][0], box[0][1], box[1][0], box[1][1], box[2][0],
+                box[2][1], box[3][0], box[3][1]
+            ],
+            outline=color)
+        # 计算预测框的height和width
+        box_height = math.sqrt((box[0][0] - box[3][0])**2 + (box[0][1] - box[3][
+            1])**2)
+        box_width = math.sqrt((box[0][0] - box[1][0])**2 + (box[0][1] - box[1][
+            1])**2)
+        # 根据预测框的height和weight绘制文本
+        if box_height > 2 * box_width:
+            font_size = max(int(box_width * 0.9), 10)
+            font = ImageFont.truetype(font_path, font_size, encoding="utf-8")
+            cur_y = box[0][1]
+            for c in txt:
+                char_size = font.getsize(c)
+                draw_left.text(
+                    (box[0][0] + 3, cur_y), c, fill=(0, 0, 0), font=font)
+                cur_y += char_size[1]
+        else:
+            font_size = max(int(box_height * 0.8), 10)
+            font = ImageFont.truetype(font_path, font_size, encoding="utf-8")
+            draw_left.text(
+                [box[0][0], box[0][1]], txt, fill=(0, 0, 0), font=font)
+    # 一些后处理
+    img_left = Image.blend(image, img_left, 0.5)
+    img_show = Image.new('RGB', (w * 2, h), (255, 255, 255))
+    img_show.paste(img_left, (0, 0, w, h))
+    # img_show.paste(img_right, (w, 0, w * 2, h))
+    # 返回绘图后的图像
+    # return np.array(img_show)
+    return np.array(img_left)
 
 def str_count(s):
     """
